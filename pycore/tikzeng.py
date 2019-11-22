@@ -8,6 +8,9 @@ def to_head( projectpath ):
 \usepackage{import}
 \usepackage{tikz} 
 \subimport{"""+ pathlayers + r"""}{init}
+\usetikzlibrary{3d}
+\usetikzlibrary{positioning}
+\usepackage{amsmath}
 """
 
 def to_cor():
@@ -18,7 +21,8 @@ def to_cor():
 \def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
 \def\FcColor{rgb:blue,5;red,2.5;white,5}
 \def\FcReluColor{rgb:blue,5;red,5;white,4}
-\def\SoftmaxColor{rgb:magenta,5;black,7}   
+\def\SoftmaxColor{rgb:magenta,5;black,7}
+\def\InpColor{rgb:black,0.5;white,0.5}
 """
 
 def to_begin():
@@ -38,7 +42,26 @@ def to_input( pathfile, to='(-3,0,0)', width=8, height=8, name="temp" ):
 \node[canvas is zy plane at x=0] (""" + name + """) at """+ to +""" {\includegraphics[width="""+ str(width)+"cm"+""",height="""+ str(height)+"cm"+"""]{"""+ pathfile +"""}};
 """
 
-# Conv
+def to_Inp( name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40, caption=" " ):
+    if isinstance(s_filer, str) and s_filer is not "":
+        s_filer = '"' + s_filer + '"'
+    if isinstance(n_filer, str) and n_filer is not "":
+        n_filer = '"' + n_filer + '"'
+    return r"""
+\pic[shift={"""+ offset +"""}] at """+ to +""" 
+    {Box={
+        name=""" + name +""",
+        caption="""+ caption +r""",
+        xlabel={{"""+ str(n_filer) +""", }},
+        opacity="1",
+        zlabel="""+ str(s_filer) +""",
+        fill=\InpColor,
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
 def to_Conv( name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40, caption=" " ):
     if isinstance(s_filer, str) and s_filer is not "":
         s_filer = '"' + s_filer + '"'
@@ -175,6 +198,18 @@ def to_SoftMax( name, s_filer=10, offset="(0,0,0)", to="(0,0,0)", width=1.5, hei
     };
 """
 
+def textbox(to, text):
+    return r"""\node at """ + to + """ {"""+ text +"""};"""  
+
+def to_connection_coords(of, to, text=None):
+    if text is None:
+        return r"""
+\draw [connection]  ("""+of+""")    -- node {\midarrow} ("""+to+""");
+"""
+    else:
+        return r"""
+\draw [connection]  ("""+of+""") node[anchor=south west,scale=1.3]{""" + text + """} -- node {\midarrow} ("""+to+""");
+"""
 
 def to_connection( of, to):
     return r"""
