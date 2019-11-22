@@ -4,11 +4,10 @@ import os
 def to_head( projectpath ):
     pathlayers = os.path.join( projectpath, 'layers/' ).replace('\\', '/')
     return r"""
-\documentclass[border=8pt, multi, tikz]{standalone} 
+\documentclass[border=8pt, multi, tikz]{article} 
 \usepackage{import}
 \subimport{"""+ pathlayers + r"""}{init}
-\usetikzlibrary{positioning}
-\usetikzlibrary{3d} %for including external image 
+\usepackage{tikz} 
 """
 
 def to_cor():
