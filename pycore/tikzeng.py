@@ -4,10 +4,10 @@ import os
 def to_head( projectpath ):
     pathlayers = os.path.join( projectpath, 'layers/' ).replace('\\', '/')
     return r"""
-\documentclass[border=8pt, multi, tikz]{article} 
+\documentclass[border=8pt, multi, tikz]{standalone} 
 \usepackage{import}
-\subimport{"""+ pathlayers + r"""}{init}
 \usepackage{tikz} 
+\subimport{"""+ pathlayers + r"""}{init}
 """
 
 def to_cor():
@@ -40,6 +40,10 @@ def to_input( pathfile, to='(-3,0,0)', width=8, height=8, name="temp" ):
 
 # Conv
 def to_Conv( name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40, caption=" " ):
+    if isinstance(s_filer, str) and s_filer is not "":
+        s_filer = '"' + s_filer + '"'
+    if isinstance(n_filer, str) and n_filer is not "":
+        n_filer = '"' + n_filer + '"'
     return r"""
 \pic[shift={"""+ offset +"""}] at """+ to +""" 
     {Box={
@@ -74,6 +78,14 @@ def to_ConvConvRelu( name, s_filer=256, n_filer=(64,64), offset="(0,0,0)", to="(
     };
 """
 
+
+
+
+def to_ReLu(name, **args):
+    return to_Pool(name, **args)
+
+def to_Norm(name, **args):
+    return to_UnPool(name, **args)
 
 
 # Pool
