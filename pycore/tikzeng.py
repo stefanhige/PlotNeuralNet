@@ -23,6 +23,7 @@ def to_cor():
 \def\FcReluColor{rgb:blue,5;red,5;white,4}
 \def\SoftmaxColor{rgb:magenta,5;black,7}
 \def\InpColor{rgb:black,0.5;white,0.5}
+\def\SigmoidColor{rgb:blue,5;green,5;white,5}
 """
 
 def to_begin():
@@ -112,11 +113,13 @@ def to_Norm(name, **args):
 
 
 # Pool
-def to_Pool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, opacity=0.5, caption=" "):
+def to_Pool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, opacity=0.5, caption="", x_label="", z_label=""):
     return r"""
 \pic[shift={ """+ offset +""" }] at """+ to +""" 
     {Box={
         name="""+name+""",
+        xlabel={{"""+ str(x_label) +""", }},
+        zlabel="""+ str(z_label) +""",
         caption="""+ caption +r""",
         fill=\PoolColor,
         opacity="""+ str(opacity) +""",
@@ -128,11 +131,13 @@ def to_Pool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, 
 """
 
 # unpool4, 
-def to_UnPool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, opacity=0.5, caption=" "):
+def to_UnPool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, opacity=0.5, caption="", x_label="", z_label=""):
     return r"""
 \pic[shift={ """+ offset +""" }] at """+ to +""" 
     {Box={
         name="""+ name +r""",
+        xlabel={{"""+ str(x_label) +""", }},
+        zlabel="""+ str(z_label) +""",
         caption="""+ caption +r""",
         fill=\UnpoolColor,
         opacity="""+ str(opacity) +""",
@@ -143,6 +148,22 @@ def to_UnPool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32
     };
 """
 
+def to_Sigmoid(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, opacity=0.5, caption="", x_label="", z_label=""):
+    return r"""
+\pic[shift={ """+ offset +""" }] at """+ to +""" 
+    {Box={
+        name="""+ name +r""",
+        xlabel={{"""+ str(x_label) +""", }},
+        zlabel="""+ str(z_label) +""",
+        caption="""+ caption +r""",
+        fill=\SigmoidColor,
+        opacity="""+ str(opacity) +""",
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
 
 
 def to_ConvRes( name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width=6, height=40, depth=40, opacity=0.2, caption=" " ):
@@ -208,9 +229,12 @@ def to_connection_coords(of, to, text=None):
 """
     else:
         return r"""
-\draw [connection]  ("""+of+""") node[anchor=south west,scale=1.3]{""" + text + """} -- node {\midarrow} ("""+to+""");
+\draw [connection]  ("""+of+""") node[anchor=north west,scale=1.2, yshift=-4]{""" + text + """} -- node {\midarrow} ("""+to+""");
 """
 
+        # return r"""
+# \draw [connection]  ("""+of+""") node[anchor=south west,scale=1.3]{""" + text + """} -- node {\midarrow} ("""+to+""");
+# """
 def to_connection( of, to):
     return r"""
 \draw [connection]  ("""+of+"""-east)    -- node {\midarrow} ("""+to+"""-west);
